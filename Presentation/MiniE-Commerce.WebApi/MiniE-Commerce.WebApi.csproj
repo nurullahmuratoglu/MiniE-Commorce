@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\MiniE-Commerce.Infrastructure\MiniE-Commerce.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\MiniE-Commerce.Persistence\MiniE-Commerce.Persistence.csproj" />
   </ItemGroup>
