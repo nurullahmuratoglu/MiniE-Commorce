@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace MiniE_Commerce.Domain.Common
 {
-    public class BaseEntity
+    public class BaseEntity:IBaseEntity
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
-
-        public bool IsDeleted { get; set; } = false;
-
+        public DateTime? UpdatedDate { get; set; }
+        public bool IsDeleted { get; set; }
 
 
     }
