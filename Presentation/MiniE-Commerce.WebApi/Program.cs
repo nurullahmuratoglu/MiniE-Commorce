@@ -1,4 +1,5 @@
 using MiniE_Commerce.Persistence;
+using MiniE_Commorce.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddAplication();
 
 var app = builder.Build();
 
