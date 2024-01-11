@@ -11,13 +11,17 @@ namespace MiniE_Commerce.Domain.Entities
     {
 
         public string Name { get; set; }
-        public int Priorty { get; set; }
-        public ICollection<Product> Products { get; set; }
-        public Category(string name, int priorty)
-        {
+        //public int Priorty { get; set; }
+        public int? ParrentCategoryId { get; set; }
+        public Category ParentCategory { get; set; }
 
+        public List<Category> Subcategories { get; set; } = new List<Category>();
+        public ICollection<Product> Products { get; set; }
+        public Category(string name, int parrentCategoryId)
+        {
+            ParrentCategoryId = parrentCategoryId;
             Name = name;
-            Priorty = priorty;
+
         }
         public Category()
         {

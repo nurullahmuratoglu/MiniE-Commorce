@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MiniE_Commerce.Domain.Common;
 using MiniE_Commerce.Domain.Entities;
+using MiniE_Commerce.Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MiniE_Commerce.Persistence.Context
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<AppUser,AppRole,string>
     {
         public AppDbContext(DbContextOptions options) : base(options)
         {
@@ -21,6 +23,7 @@ namespace MiniE_Commerce.Persistence.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
@@ -29,6 +32,11 @@ namespace MiniE_Commerce.Persistence.Context
         {
             UpdateChangeTracker();
             return base.SaveChanges();
+        }
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            UpdateChangeTracker();
+            return await base.SaveChangesAsync(cancellationToken);
         }
         public void UpdateChangeTracker()
         {
