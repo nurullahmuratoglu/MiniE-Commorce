@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MiniE_Commorce.Application.Interfaces.Token;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,9 @@ namespace MiniE_Commorce.Application
             var assembly = Assembly.GetExecutingAssembly();
             services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(assembly));
             services.AddAutoMapper(assembly);
+
+
+            
 
         }
     }

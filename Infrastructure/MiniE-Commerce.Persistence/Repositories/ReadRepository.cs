@@ -14,6 +14,7 @@ namespace MiniE_Commerce.Persistence.Repositories
     public class ReadRepository<T> : IReadRepository<T> where T : class, IBaseEntity, new()
     {
         private readonly DbContext _dbContext;
+        
 
         public ReadRepository(DbContext dbContext)
         {

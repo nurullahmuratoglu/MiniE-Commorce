@@ -1,0 +1,53 @@
+﻿using AutoMapper;
+using Azure.Core;
+using Microsoft.AspNetCore.Identity;
+using MiniE_Commerce.Domain.Entities.Identity;
+using MiniE_Commorce.Application.Dtos.Token;
+using MiniE_Commorce.Application.Exceptions;
+using MiniE_Commorce.Application.Features.Commands.AppUser.LoginUser;
+using MiniE_Commorce.Application.Interfaces.Services;
+using MiniE_Commorce.Application.Interfaces.Token;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MiniE_Commerce.Persistence.Services
+{
+    public class AuthService : IAuthService
+    {
+
+
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly ITokenHandler _tokenHandler;
+
+        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, ITokenHandler tokenHandler)
+        {
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _tokenHandler = tokenHandler;
+        }
+
+        public async Task<TokenDto> LoginAsync(string usernameOrEmail, string password, int accessTokenLifeTime)
+        {
+            var user = await _userManager.FindByEmailAsync(usernameOrEmail);
+
+            if (user == null) user = await _userManager.FindByNameAsync(usernameOrEmail);
+            if (user == null) throw new NotFoundUserException("kullanıcı adı veya şifre yanlış");
+
+
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+
+            if (result.Succeeded)
+            {
+                return _tokenHandler.CreateAccessToken(1000, user);
+            }
+
+
+            throw new NotFoundUserException("kullanıcı adı veya şifre yanlış");
+        }
+    }
+}

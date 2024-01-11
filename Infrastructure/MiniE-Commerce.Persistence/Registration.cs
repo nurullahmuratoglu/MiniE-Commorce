@@ -1,11 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MiniE_Commerce.Domain.Entities.Identity;
 using MiniE_Commerce.Persistence.Context;
 using MiniE_Commerce.Persistence.Repositories;
+using MiniE_Commerce.Persistence.Repositories.Category;
+using MiniE_Commerce.Persistence.Repositories.Product;
+using MiniE_Commerce.Persistence.Services;
 using MiniE_Commerce.Persistence.UnitOfWorks;
 using MiniE_Commorce.Application.Interfaces.Repositories;
+using MiniE_Commorce.Application.Interfaces.Repositories.Category;
+using MiniE_Commorce.Application.Interfaces.Repositories.Product;
+using MiniE_Commorce.Application.Interfaces.Services;
 using MiniE_Commorce.Application.Interfaces.UnitOfWorks;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +27,44 @@ namespace MiniE_Commerce.Persistence
     {
         public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<AppDbContext>(opt =>
-    opt.UseSqlServer(configuration.GetConnectionString("SQLConnection")));
-            services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
-            services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
+
+
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("SQLConnection"));
+            }, ServiceLifetime.Scoped);
+
+            services.AddIdentity<AppUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 3;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+            })
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddSignInManager<SignInManager<AppUser>>();
+
+
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
+            services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
+            services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
 
+            services.AddScoped<IProductReadRepository, ProductReadRepository>();
+            services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
+            services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
+            services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
+
+
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
+
+
+            
         }
     }
 }

@@ -14,7 +14,24 @@ namespace MiniE_Commerce.Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
+
+            builder.HasData(
+    new
+    {
+        Id = 1,
+        Name = "BaseCategory",
+        ParentCategoryID = (int?)null,
+        IsDeleted = false,
+        CreatedDate = DateTime.Now
+
+    }) ;
+
+
             builder.Property(x => x.Name).HasMaxLength(256);
+            builder
+.HasMany(c => c.Subcategories)
+.WithOne(c => c.ParentCategory)
+.HasForeignKey(c => c.ParrentCategoryId);
         }
     }
 }
