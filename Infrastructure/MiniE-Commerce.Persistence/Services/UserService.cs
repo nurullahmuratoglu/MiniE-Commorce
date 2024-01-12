@@ -39,5 +39,18 @@ namespace MiniE_Commerce.Persistence.Services
             }
             throw new UserCreateFailedException(result.Errors);
         }
+
+        public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user,DateTime accessTokenDate,int addOnAccessTokenDate)
+        {
+
+            if (user != null)
+            {
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenEndDate = accessTokenDate.AddSeconds(addOnAccessTokenDate);
+                await _usermanager.UpdateAsync(user);
+            }
+            else
+                throw new NotFoundUserException();
+        }
     }
 }

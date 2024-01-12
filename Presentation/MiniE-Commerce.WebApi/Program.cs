@@ -7,6 +7,8 @@ using MiniE_Commerce.Persistence.Repositories.Product;
 using MiniE_Commorce.Application;
 using MiniE_Commorce.Application.Interfaces.Repositories.Category;
 using MiniE_Commorce.Application.Interfaces.Repositories.Product;
+using Serilog;
+using Serilog.Core;
 using System.Security.Claims;
 using System.Text;
 
@@ -35,9 +37,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false,
 
             NameClaimType = ClaimTypes.Name //JWT üzerinde Name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
+
         };
     });
 
+
+Logger log = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log.txt")
+    
+
+
+
+    .CreateLogger();
+
+builder.Host.UseSerilog(log);
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddAplication();
 builder.Services.AddInfrastructure();
