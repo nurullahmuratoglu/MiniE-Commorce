@@ -11,5 +11,9 @@ namespace MiniE_Commorce.Application.Exceptions
         public NotFoundUserException(string? message) : base(message)
         {
         }
+        public NotFoundUserException()
+        {
+            
+        }
     }
 }

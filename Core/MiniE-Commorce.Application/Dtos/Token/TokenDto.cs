@@ -10,6 +10,6 @@ namespace MiniE_Commorce.Application.Dtos.Token
     {
         public string AccessToken { get; set; }
         public DateTime Expiration { get; set; }
-        public string RefreshToken { get; set; } = string.Empty;
+        public string RefreshToken { get; set; }
     }
 }

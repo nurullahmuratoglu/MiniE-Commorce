@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MiniE_Commorce.Application.Features.Commands.AppUser.CreateUser;
 using MiniE_Commorce.Application.Features.Commands.AppUser.LoginUser;
+using MiniE_Commorce.Application.Features.Commands.AppUser.RefreshTokenLogin;
 
 namespace MiniE_Commerce.WebApi.Controllers
 {
@@ -25,6 +26,13 @@ namespace MiniE_Commerce.WebApi.Controllers
         }
         [HttpPost("[action]")]
         public async Task<IActionResult> Login(LoginUserCommandRequest request)
+        {
+            var response = await _mediator.Send(request);
+            return Ok(response);
+        
+        }        
+        [HttpPost("[action]")]
+        public async Task<IActionResult> RefreshTokenLogin([FromBody]RefreshTokenLoginCommandRequest request)
         {
             var response = await _mediator.Send(request);
             return Ok(response);

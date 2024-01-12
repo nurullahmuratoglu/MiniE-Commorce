@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Azure.Core;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MiniE_Commerce.Domain.Entities.Identity;
 using MiniE_Commorce.Application.Dtos.Token;
 using MiniE_Commorce.Application.Exceptions;
@@ -22,12 +23,14 @@ namespace MiniE_Commerce.Persistence.Services
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenHandler _tokenHandler;
+        private readonly IUserService _userService;
 
-        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, ITokenHandler tokenHandler)
+        public AuthService(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, ITokenHandler tokenHandler, IUserService userService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _tokenHandler = tokenHandler;
+            _userService = userService;
         }
 
         public async Task<TokenDto> LoginAsync(string usernameOrEmail, string password, int accessTokenLifeTime)
@@ -43,11 +46,26 @@ namespace MiniE_Commerce.Persistence.Services
 
             if (result.Succeeded)
             {
-                return _tokenHandler.CreateAccessToken(1000, user);
+
+                var tokendto= _tokenHandler.CreateAccessToken(1000, user);
+                await _userService.UpdateRefreshTokenAsync(tokendto.RefreshToken, user, tokendto.Expiration, 15000);
+                return tokendto;
+                
             }
-
-
             throw new NotFoundUserException("kullanıcı adı veya şifre yanlış");
+        }
+
+        public async Task<TokenDto> RefreshTokenLoginAsync(string refreshToken)
+        {
+            AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+            if (user != null && user?.RefreshTokenEndDate > DateTime.UtcNow)
+            {
+                TokenDto token = _tokenHandler.CreateAccessToken(15, user);
+                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 15000);
+                return token;
+            }
+            else
+                throw new NotFoundUserException();
         }
     }
 }
