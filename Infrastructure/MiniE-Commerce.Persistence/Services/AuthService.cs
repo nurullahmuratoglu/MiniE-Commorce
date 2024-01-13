@@ -60,7 +60,7 @@ namespace MiniE_Commerce.Persistence.Services
             AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             if (user != null && user?.RefreshTokenEndDate > DateTime.UtcNow)
             {
-                TokenDto token = _tokenHandler.CreateAccessToken(15, user);
+                TokenDto token = _tokenHandler.CreateAccessToken(10000, user);
                 await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 15000);
                 return token;
             }
