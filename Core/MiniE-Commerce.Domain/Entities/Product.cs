@@ -14,6 +14,7 @@ namespace MiniE_Commerce.Domain.Entities
         public float Price { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+        public ICollection<BasketItem> BasketItems { get; set; }
 
         public Product(string name, int stock, float price)
         {
