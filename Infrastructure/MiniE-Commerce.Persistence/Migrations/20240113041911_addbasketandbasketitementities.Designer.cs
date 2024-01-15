@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniE_Commerce.Persistence.Context;
 
@@ -11,9 +12,11 @@ using MiniE_Commerce.Persistence.Context;
 namespace MiniE_Commerce.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240113041911_addbasketandbasketitementities")]
+    partial class addbasketandbasketitementities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,8 +154,7 @@ namespace MiniE_Commerce.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Baskets");
                 });
@@ -227,7 +229,7 @@ namespace MiniE_Commerce.Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 1, 13, 21, 29, 10, 723, DateTimeKind.Local).AddTicks(3010),
+                            CreatedDate = new DateTime(2024, 1, 13, 7, 19, 11, 468, DateTimeKind.Local).AddTicks(9472),
                             IsDeleted = false,
                             Name = "BaseCategory"
                         });
@@ -427,8 +429,8 @@ namespace MiniE_Commerce.Persistence.Migrations
             modelBuilder.Entity("MiniE_Commerce.Domain.Entities.Basket", b =>
                 {
                     b.HasOne("MiniE_Commerce.Domain.Entities.Identity.AppUser", "User")
-                        .WithOne("Baskets")
-                        .HasForeignKey("MiniE_Commerce.Domain.Entities.Basket", "UserId")
+                        .WithMany("Baskets")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -488,8 +490,7 @@ namespace MiniE_Commerce.Persistence.Migrations
 
             modelBuilder.Entity("MiniE_Commerce.Domain.Entities.Identity.AppUser", b =>
                 {
-                    b.Navigation("Baskets")
-                        .IsRequired();
+                    b.Navigation("Baskets");
                 });
 
             modelBuilder.Entity("MiniE_Commerce.Domain.Entities.Product", b =>

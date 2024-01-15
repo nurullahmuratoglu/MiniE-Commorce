@@ -12,5 +12,6 @@ namespace MiniE_Commerce.Domain.Entities.Identity
         public string NameSurname { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenEndDate { get; set; }
+        public Basket Baskets { get; set; }
     }
 }

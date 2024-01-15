@@ -43,7 +43,8 @@ namespace MiniE_Commerce.Infrastructure.Services.Token
                 expires: token.Expiration,
                 notBefore: DateTime.UtcNow,
                 signingCredentials: signingCredentials,
-                claims: new List<Claim> { new(ClaimTypes.Name, appUser.UserName) }
+                claims: new List<Claim> { new(ClaimTypes.Name, appUser.UserName), new(ClaimTypes.NameIdentifier, appUser.Id.ToString()) }
+                
                 );
 
             //Token oluşturucu sınıfından bir örnek alalım.

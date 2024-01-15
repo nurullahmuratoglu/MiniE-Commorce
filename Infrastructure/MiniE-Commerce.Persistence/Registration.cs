@@ -5,11 +5,15 @@ using Microsoft.Extensions.DependencyInjection;
 using MiniE_Commerce.Domain.Entities.Identity;
 using MiniE_Commerce.Persistence.Context;
 using MiniE_Commerce.Persistence.Repositories;
+using MiniE_Commerce.Persistence.Repositories.Basket;
+using MiniE_Commerce.Persistence.Repositories.BasketItem;
 using MiniE_Commerce.Persistence.Repositories.Category;
 using MiniE_Commerce.Persistence.Repositories.Product;
 using MiniE_Commerce.Persistence.Services;
 using MiniE_Commerce.Persistence.UnitOfWorks;
 using MiniE_Commorce.Application.Interfaces.Repositories;
+using MiniE_Commorce.Application.Interfaces.Repositories.Basket;
+using MiniE_Commorce.Application.Interfaces.Repositories.BasketItem;
 using MiniE_Commorce.Application.Interfaces.Repositories.Category;
 using MiniE_Commorce.Application.Interfaces.Repositories.Product;
 using MiniE_Commorce.Application.Interfaces.Services;
@@ -60,8 +64,20 @@ namespace MiniE_Commerce.Persistence
 
 
 
+            services.AddScoped<IBasketReadRepository, BasketReadRepository>();
+            services.AddScoped<IBasketWriteRepository, BasketWriteRepository>();
+
+            services.AddScoped<IBasketItemWriteRepository, BasketItemWriteRepository>();
+            services.AddScoped<IBasketItemReadRepository, BasketItemReadRepository>();
+
+
+
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
+
+
+            services.AddScoped<IBasketService, BasketService>();
 
 
             

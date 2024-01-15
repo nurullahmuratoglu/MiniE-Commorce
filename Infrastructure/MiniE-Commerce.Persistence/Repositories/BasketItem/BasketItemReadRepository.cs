@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using Entites = MiniE_Commerce.Domain.Entities;
+
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MiniE_Commorce.Application.Interfaces.Repositories.BasketItem;
+using Microsoft.EntityFrameworkCore;
+using MiniE_Commerce.Persistence.Context;
+
+namespace MiniE_Commerce.Persistence.Repositories.BasketItem
+{
+    public class BasketItemReadRepository : ReadRepository<Entites.BasketItem>, IBasketItemReadRepository
+    {
+        public BasketItemReadRepository(AppDbContext dbContext) : base(dbContext)
+        {
+        }
+    }
+}

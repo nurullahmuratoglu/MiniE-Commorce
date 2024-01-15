@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 namespace MiniE_Commerce.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes ="Admin")]
     [ApiController]
     public class ProductController : ControllerBase
     {
