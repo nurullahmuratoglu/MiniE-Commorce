@@ -83,7 +83,7 @@ builder.Host.UseSerilog(log);
 
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddAplication();
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 
 

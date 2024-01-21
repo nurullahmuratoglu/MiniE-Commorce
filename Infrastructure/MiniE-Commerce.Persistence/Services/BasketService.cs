@@ -36,14 +36,16 @@ namespace MiniE_Commerce.Persistence.Services
 
             var userId = _contextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var basket = await _basketReadRepository.GetAsync(predicate: x => x.UserId == userId, include: x => x.Include(b => b.BasketItems).ThenInclude(I=>I.Product));
+            var basket = await _basketReadRepository.GetAsync(predicate: x => x.UserId == userId, include: x => x.Include(b => b.BasketItems).ThenInclude(I => I.Product));
 
             if (basket == null)
             {
                 Basket createBasket = new() { UserId = userId };
+
+                createBasket.BasketItems = new List<BasketItem>() { new() { ProductId = basketItem.ProductId, Quantity = basketItem.Quantity } };
+
+
                 await _basketWriteRepository.AddAsync(createBasket);
-                await _unitOfWork.SaveAsync();
-                await _basketItemWriteRepository.AddAsync(new() { ProductId = basketItem.ProductId, Quantity = basketItem.Quantity, BasketId = createBasket.Id });
                 await _unitOfWork.SaveAsync();
                 return;
             }
@@ -56,7 +58,7 @@ namespace MiniE_Commerce.Persistence.Services
 
                 return;
             }
-            hasBasketItem.Quantity = StockControl(hasBasketItem.Product.Stock,hasBasketItem.Quantity + basketItem.Quantity);
+            hasBasketItem.Quantity = StockControl(hasBasketItem.Product.Stock, hasBasketItem.Quantity + basketItem.Quantity);
             await _basketItemWriteRepository.UpdateAsync(hasBasketItem);
             await _unitOfWork.SaveAsync();
         }
@@ -66,7 +68,7 @@ namespace MiniE_Commerce.Persistence.Services
             var userId = _contextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var basket = await _basketReadRepository.GetAsync(
                      predicate: x => x.UserId == userId,
-                      include: x => x.Include(b => b.BasketItems).ThenInclude(bi => bi.Product));
+                      include: x => x.Include(b => b.BasketItems).ThenInclude(bi => bi.Product), true);
             return basket;
         }
 
@@ -79,7 +81,7 @@ namespace MiniE_Commerce.Persistence.Services
 
         public async Task UpdateQuantityAsync(UpdateBasketItemDto updateBasketItem)
         {
-            var basketItem = await _basketItemReadRepository.GetAsync(predicate: x => x.Id == updateBasketItem.BasketItemId,include:x=>x.Include(b=>b.Product));
+            var basketItem = await _basketItemReadRepository.GetAsync(predicate: x => x.Id == updateBasketItem.BasketItemId, include: x => x.Include(b => b.Product));
 
             basketItem.Quantity = StockControl(basketItem.Product.Stock, updateBasketItem.Quantity);
             await _basketItemWriteRepository.UpdateAsync(basketItem);

@@ -22,11 +22,16 @@ namespace MiniE_Commerce.Persistence.Context
 
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetails> OrderDetails { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.AppUser)
+                .WithMany(u => u.Orders)
+                .HasForeignKey(o => o.UserId);
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 

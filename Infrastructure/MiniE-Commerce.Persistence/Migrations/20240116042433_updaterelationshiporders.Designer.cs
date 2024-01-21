@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniE_Commerce.Persistence.Context;
 
@@ -11,9 +12,11 @@ using MiniE_Commerce.Persistence.Context;
 namespace MiniE_Commerce.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240116042433_updaterelationshiporders")]
+    partial class updaterelationshiporders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,7 +230,7 @@ namespace MiniE_Commerce.Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 1, 16, 7, 31, 59, 999, DateTimeKind.Local).AddTicks(720),
+                            CreatedDate = new DateTime(2024, 1, 16, 7, 24, 33, 205, DateTimeKind.Local).AddTicks(5805),
                             IsDeleted = false,
                             Name = "BaseCategory"
                         });
@@ -384,9 +387,6 @@ namespace MiniE_Commerce.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<float>("TotalProductPrice")

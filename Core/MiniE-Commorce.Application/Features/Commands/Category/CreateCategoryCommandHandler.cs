@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MiniE_Commorce.Application.Interfaces.Repositories.Category;
+using MiniE_Commorce.Application.Interfaces.Services.Redis;
 
 namespace MiniE_Commorce.Application.Features.Commands.Category
 {
@@ -16,12 +17,14 @@ namespace MiniE_Commorce.Application.Features.Commands.Category
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICategoryWriteRepository _categoryWriteRepository;
+        private readonly ICategoryCacheService _categoryCacheService;
 
-        public CreateCategoryCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, ICategoryWriteRepository categoryWriteRepository)
+        public CreateCategoryCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, ICategoryWriteRepository categoryWriteRepository, ICategoryCacheService categoryCacheService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _categoryWriteRepository = categoryWriteRepository;
+            _categoryCacheService = categoryCacheService;
         }
 
         public async Task<Unit> Handle(CreateCategoryCommandRequest request, CancellationToken cancellationToken)
@@ -30,6 +33,7 @@ namespace MiniE_Commorce.Application.Features.Commands.Category
             var category = _mapper.Map<CreateCategoryCommandRequest, Entities.Category>(request);
             await _categoryWriteRepository.AddAsync(category);
             await _unitOfWork.SaveAsync();
+            await _categoryCacheService.SetAsync(category.Id.ToString(),category);
             return Unit.Value;
         }
     }

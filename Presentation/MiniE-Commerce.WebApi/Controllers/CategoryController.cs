@@ -5,6 +5,7 @@ using MiniE_Commorce.Application.Features.Commands.Category;
 using MiniE_Commorce.Application.Features.Commands.Product.CreateProduct;
 using MiniE_Commorce.Application.Features.Queries.Category.GetAllCategory;
 using MiniE_Commorce.Application.Features.Queries.Product.GetByCategoryProducts;
+using MiniE_Commorce.Application.Interfaces.Services.Redis;
 
 namespace MiniE_Commerce.WebApi.Controllers
 {
@@ -13,10 +14,12 @@ namespace MiniE_Commerce.WebApi.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ICategoryCacheService _categoryCacheService;
 
-        public CategoryController(IMediator mediator)
+        public CategoryController(IMediator mediator, ICategoryCacheService categoryCacheService)
         {
             _mediator = mediator;
+            _categoryCacheService = categoryCacheService;
         }
 
         [HttpPost]
