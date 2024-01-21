@@ -1,31 +1,27 @@
 ﻿using AutoMapper;
-using AutoMapper.Internal.Mappers;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Entities = MiniE_Commerce.Domain.Entities;
-using MiniE_Commerce.Domain.Entities;
 using MiniE_Commorce.Application.Interfaces.Repositories.Category;
 using MiniE_Commorce.Application.Interfaces.Repositories.Product;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
+using MiniE_Commorce.Application.Interfaces.Services.Redis;
 
 namespace MiniE_Commorce.Application.Features.Queries.Product.GetByCategoryProducts
 {
     public class GetByCategoryProductsQueryHandler : IRequestHandler<GetByCategoryProductsQueryRequest, List<GetByCategoryProductsQueryResponse>>
     {
+        private readonly ICategoryCacheService _categoryCacheService;
+        private readonly IProductCacheService _productCacheService;
+
         private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly IProductReadRepository _productReadRepository;
         private readonly IMapper _mapper;
 
-        public GetByCategoryProductsQueryHandler(ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository, IMapper mapper)
+        public GetByCategoryProductsQueryHandler(ICategoryReadRepository categoryReadRepository, IProductReadRepository productReadRepository, IMapper mapper, ICategoryCacheService categoryCacheService, IProductCacheService productCacheService)
         {
             _categoryReadRepository = categoryReadRepository;
             _productReadRepository = productReadRepository;
             _mapper = mapper;
+            _categoryCacheService = categoryCacheService;
+            _productCacheService = productCacheService;
         }
 
         public async Task<List<GetByCategoryProductsQueryResponse>> Handle(GetByCategoryProductsQueryRequest request, CancellationToken cancellationToken)
@@ -39,23 +35,25 @@ namespace MiniE_Commorce.Application.Features.Queries.Product.GetByCategoryProdu
 
         private async Task RecursivelyGetProducts(int categoryId, List<GetByCategoryProductsQueryResponse> productDtos)
         {
+            var product = await _productCacheService.GetAllAsync();
+            var categories = await _categoryCacheService.GetAllAsync();
 
-            var category = await _categoryReadRepository.GetAsync(predicate:x=>x.Id==categoryId, include:x=>x.Include(p=>p.Products));
-
-            //var category = await _context.Categories.Include(x => x.Products.Where(x => x.IsActive == true)).FirstOrDefaultAsync(x => x.Id == categoryId);
+            var products= product.Where(x => x.CategoryId == categoryId);
 
 
-            var mappedProductDtos = _mapper.Map<List<GetByCategoryProductsQueryResponse>>(category.Products);
+
+            //var category = await _categoryReadRepository.GetAsync(predicate:x=>x.Id==categoryId, include:x=>x.Include(p=>p.Products));
+            var mappedProductDtos = _mapper.Map<List<GetByCategoryProductsQueryResponse>>(products);
+            mappedProductDtos.ForEach(item =>
+        item.CategoryName = categories.FirstOrDefault(c => c.Id == item.CategoryId).Name);
+
+
+
             productDtos.AddRange(mappedProductDtos);
 
-            var subcategories = await _categoryReadRepository.GetAllAsync(predicate: x => x.ParrentCategoryId == categoryId);
-            
+            //var subcategories = await _categoryReadRepository.GetAllAsync(predicate: x => x.ParrentCategoryId == categoryId);
 
-
-
-            //var subcategories = await _context.Categories
-            //    .Where(c => c.ParentCategoryID == categoryId)
-            //    .ToListAsync();
+            var subcategories = categories.Where(x => x.ParrentCategoryId == categoryId).ToList();
 
             foreach (var subcategory in (subcategories))
             {

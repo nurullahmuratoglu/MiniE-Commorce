@@ -9,27 +9,31 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MiniE_Commorce.Application.Interfaces.Repositories.Product;
+using MiniE_Commorce.Application.Interfaces.Services.Redis;
 
 namespace MiniE_Commorce.Application.Features.Queries.Product.GetByIdProduct
 {
     public class GetByIdProductQueryHandler : IRequestHandler<GetByIdProductQueryRequest, GetByIdProductQueryResponse>
     {
-        
-        private readonly IProductReadRepository _productReadRepository;
+        private readonly IProductCacheService _productCacheService;
+        private readonly ICategoryCacheService _categoryCacheService;
         private readonly IMapper _mapper;
 
-        public GetByIdProductQueryHandler( IMapper mapper, IProductReadRepository productReadRepository)
+        public GetByIdProductQueryHandler(IMapper mapper, IProductCacheService productCacheService, ICategoryCacheService categoryCacheService)
         {
-           
+
             _mapper = mapper;
-            _productReadRepository = productReadRepository;
+            _productCacheService = productCacheService;
+            _categoryCacheService = categoryCacheService;
         }
 
         public async Task<GetByIdProductQueryResponse> Handle(GetByIdProductQueryRequest request, CancellationToken cancellationToken)
         {
-            var product = await _productReadRepository.GetAsync(predicate:x => x.Id == request.ProductId,include:x=>x.Include(p=>p.Category));
-            var prodoctDto = _mapper.Map<Entites.Product, GetByIdProductQueryResponse>(product);
-            return prodoctDto;
+            var product = await _productCacheService.GetAsync(request.ProductId.ToString());
+            var category = await _categoryCacheService.GetAsync(product.CategoryId.ToString());
+            var productResponse = _mapper.Map<GetByIdProductQueryResponse>(product);
+            productResponse.CategoryName = category.Name;
+            return productResponse;
 
 
         }

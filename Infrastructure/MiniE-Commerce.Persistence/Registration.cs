@@ -8,6 +8,8 @@ using MiniE_Commerce.Persistence.Repositories;
 using MiniE_Commerce.Persistence.Repositories.Basket;
 using MiniE_Commerce.Persistence.Repositories.BasketItem;
 using MiniE_Commerce.Persistence.Repositories.Category;
+using MiniE_Commerce.Persistence.Repositories.Order;
+using MiniE_Commerce.Persistence.Repositories.OrderDetails;
 using MiniE_Commerce.Persistence.Repositories.Product;
 using MiniE_Commerce.Persistence.Services;
 using MiniE_Commerce.Persistence.UnitOfWorks;
@@ -15,6 +17,8 @@ using MiniE_Commorce.Application.Interfaces.Repositories;
 using MiniE_Commorce.Application.Interfaces.Repositories.Basket;
 using MiniE_Commorce.Application.Interfaces.Repositories.BasketItem;
 using MiniE_Commorce.Application.Interfaces.Repositories.Category;
+using MiniE_Commorce.Application.Interfaces.Repositories.Order;
+using MiniE_Commorce.Application.Interfaces.Repositories.OrderDetails;
 using MiniE_Commorce.Application.Interfaces.Repositories.Product;
 using MiniE_Commorce.Application.Interfaces.Services;
 using MiniE_Commorce.Application.Interfaces.UnitOfWorks;
@@ -47,7 +51,8 @@ namespace MiniE_Commerce.Persistence
                 options.Password.RequireUppercase = false;
             })
                 .AddEntityFrameworkStores<AppDbContext>()
-                .AddSignInManager<SignInManager<AppUser>>();
+                .AddSignInManager<SignInManager<AppUser>>()
+                .AddDefaultTokenProviders();
 
 
 
@@ -61,7 +66,10 @@ namespace MiniE_Commerce.Persistence
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
             services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
             services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
-
+            services.AddScoped<IOrderReadRepository, OrderReadRepository>();
+            services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
+            services.AddScoped<IOrderDetailsWriteRepository, OrderDetailsWriteRepository>();
+            services.AddScoped<IOrderDetailsReadRepository, OrderDetailsReadRepository>();
 
 
             services.AddScoped<IBasketReadRepository, BasketReadRepository>();
@@ -78,6 +86,10 @@ namespace MiniE_Commerce.Persistence
 
 
             services.AddScoped<IBasketService, BasketService>();
+            services.AddScoped<IOrderService, OrderService>();
+
+
+
 
 
             
