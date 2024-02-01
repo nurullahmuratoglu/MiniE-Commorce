@@ -7,6 +7,7 @@ namespace MiniE_Commerce.WebApi.Extensions
 {
     public static class ConfigureExceptionHandlerExtension
     {
+
         public static void ConfigureExceptionHandler<T>(this WebApplication application, ILogger<T> logger)
         {
             application.UseExceptionHandler(builder =>

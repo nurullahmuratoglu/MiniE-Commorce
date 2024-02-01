@@ -1,21 +1,16 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MiniE_Commerce.Infrastructure;
+using MiniE_Commerce.Infrastructure.Settings;
 using MiniE_Commerce.Persistence;
-using MiniE_Commerce.Persistence.Repositories.Category;
-using MiniE_Commerce.Persistence.Repositories.Product;
 using MiniE_Commerce.WebApi.Configurations.ColumnWriter;
-using MiniE_Commerce.WebApi.Extensions;
 using MiniE_Commorce.Application;
-using MiniE_Commorce.Application.Interfaces.Repositories.Category;
-using MiniE_Commorce.Application.Interfaces.Repositories.Product;
 using Serilog;
 using Serilog.Context;
 using Serilog.Core;
-using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
-using System.Configuration;
 using System.Security.Claims;
 using System.Text;
 
@@ -28,6 +23,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
+
+var tokenOptions = builder.Configuration.GetSection("Token").Get<TokenSettings>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer("Admin", options =>
     {
@@ -38,13 +37,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true, //Oluþturulan token deðerinin süresini kontrol edecek olan doðrulamadýr.
             ValidateIssuerSigningKey = true, //Üretilecek token deðerinin uygulamamýza ait bir deðer olduðunu ifade eden suciry key verisinin doðrulanmasýdýr.
 
-            ValidAudience = builder.Configuration["Token:Audience"],
-            ValidIssuer = builder.Configuration["Token:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),
+            ValidAudience = tokenOptions.Audience,
+            ValidIssuer = tokenOptions.Issuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions.SecurityKey)),
             LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false,
-
             NameClaimType = ClaimTypes.Name, //JWT üzerinde Name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
-            
 
         };
     });
