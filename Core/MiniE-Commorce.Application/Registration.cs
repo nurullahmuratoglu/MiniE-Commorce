@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MiniE_Commorce.Application.BaseAppSettings;
 using MiniE_Commorce.Application.Interfaces.Token;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace MiniE_Commorce.Application
             services.AddAutoMapper(assembly);
 
 
-            
+
 
         }
     }
