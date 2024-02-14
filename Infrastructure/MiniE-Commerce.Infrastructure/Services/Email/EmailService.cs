@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Options;
-using MiniE_Commorce.Application.BaseAppSettings;
 using MiniE_Commorce.Application.Interfaces.Services.Email;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.Net.Mail;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using MiniE_Commerce.Infrastructure.Settings;
 
 namespace MiniE_Commerce.Infrastructure.Services.Email
 {

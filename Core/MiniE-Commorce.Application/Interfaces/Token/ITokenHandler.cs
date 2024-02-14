@@ -10,7 +10,7 @@ namespace MiniE_Commorce.Application.Interfaces.Token
 {
     public interface ITokenHandler
     {
-        TokenDto CreateAccessToken(int second, AppUser appUser);
+        TokenDto CreateAccessToken(AppUser appUser);
         string CreateRefreshToken(); 
     }
 }

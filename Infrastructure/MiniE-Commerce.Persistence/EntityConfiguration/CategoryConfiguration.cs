@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniE_Commerce.Persistence.Configuration
+namespace MiniE_Commerce.Persistence.EntityConfiguration
 {
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
