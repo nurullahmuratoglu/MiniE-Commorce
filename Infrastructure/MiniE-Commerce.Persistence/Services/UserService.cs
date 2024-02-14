@@ -27,7 +27,7 @@ namespace MiniE_Commerce.Persistence.Services
             _usermanager = usermanager;
             _rabbitMQService = rabbitMQService;
         }
-
+        
         public async Task<CreateUserResponseDto> CreateAsync(CreateUserDto user)
         {
             var createUser = _mapper.Map<AppUser>(user);
@@ -42,7 +42,7 @@ namespace MiniE_Commerce.Persistence.Services
             }
             throw new UserCreateFailedException(result.Errors);
         }
-
+        
         public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user,DateTime accessTokenDate,int addOnAccessTokenDate)
         {
 

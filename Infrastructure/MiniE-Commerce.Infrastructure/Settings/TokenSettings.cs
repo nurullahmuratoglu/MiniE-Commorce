@@ -11,5 +11,7 @@ namespace MiniE_Commerce.Infrastructure.Settings
         public string Audience { get; set; }
         public string Issuer { get; set; }
         public string SecurityKey { get; set; }
+        public int TokenExpirationMunitues { get; set; }
+        public int RefreshTokenExpiratioMunitues { get; set; }
     }
 }

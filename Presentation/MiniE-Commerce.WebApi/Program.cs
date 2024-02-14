@@ -5,6 +5,7 @@ using MiniE_Commerce.Infrastructure;
 using MiniE_Commerce.Infrastructure.Settings;
 using MiniE_Commerce.Persistence;
 using MiniE_Commerce.WebApi.Configurations.ColumnWriter;
+using MiniE_Commerce.WebApi.Extensions;
 using MiniE_Commorce.Application;
 using Serilog;
 using Serilog.Context;
@@ -26,25 +27,7 @@ builder.Services.AddSwaggerGen();
 
 
 
-var tokenOptions = builder.Configuration.GetSection("Token").Get<TokenSettings>();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer("Admin", options =>
-    {
-        options.TokenValidationParameters = new()
-        {
-            ValidateAudience = true, //Oluþturulacak token deðerini kimlerin/hangi originlerin/sitelerin kullanýcý belirlediðimiz deðerdir. -> www.bilmemne.com
-            ValidateIssuer = true, //Oluþturulacak token deðerini kimin daðýttýný ifade edeceðimiz alandýr. -> www.myapi.com
-            ValidateLifetime = true, //Oluþturulan token deðerinin süresini kontrol edecek olan doðrulamadýr.
-            ValidateIssuerSigningKey = true, //Üretilecek token deðerinin uygulamamýza ait bir deðer olduðunu ifade eden suciry key verisinin doðrulanmasýdýr.
 
-            ValidAudience = tokenOptions.Audience,
-            ValidIssuer = tokenOptions.Issuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions.SecurityKey)),
-            LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false,
-            NameClaimType = ClaimTypes.Name, //JWT üzerinde Name claimne karþýlýk gelen deðeri User.Identity.Name propertysinden elde edebiliriz.
-
-        };
-    });
 
 
 SqlColumn sqlColumn = new SqlColumn();
@@ -92,7 +75,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-//app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
